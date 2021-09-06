@@ -11,6 +11,10 @@ export default {
     56: '0x2b5c31507cE67B9267514Ac57AAC5f3f2d56A17d',
     97: '',
   },
+  masterChefFAD: {
+    56: '0x7D265741a70a3aC7bE22a08A463B00f442E1cd66',
+    97: '',
+  },
   wbnb: {
     56: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
     97: '',

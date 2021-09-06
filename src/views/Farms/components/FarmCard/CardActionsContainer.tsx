@@ -10,10 +10,12 @@ import useI18n from 'hooks/useI18n'
 import UnlockButton from 'components/UnlockButton'
 import { useApprove } from 'hooks/useApprove'
 import { useApproveJava } from 'hooks/useApproveJava'
-import { useMasterchef, useMasterchefJava } from 'hooks/useContract'
+import { useApproveFAD } from 'hooks/useApproveFAD'
+import { useMasterchef, useMasterchefJava, useMasterchefFAD } from 'hooks/useContract'
 import StakeAction from './StakeAction'
 import HarvestAction from './HarvestAction'
 import HarvestActionJava from './HarvestActionJava'
+import HarvestActionFAD from './HarvestActionFAD'
 
 
 const Action = styled.div`
@@ -48,19 +50,22 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, ethereum, account }
 
   const { onApprove } = useApprove(lpContract)
   const { onApproveJava } = useApproveJava(lpContract)
+  const { onApproveFAD } = useApproveFAD(lpContract)
 
   const handleApprove = useCallback(async () => {
     try {
       setRequestedApproval(true)
       if (farm.earnToken === 'JAVA')
         await onApproveJava()
-      else
+      else if (farm.earnToken === 'FAD')
+        await onApproveFAD()
+      else if (farm.earnToken === 'ANFT')
         await onApprove()
       setRequestedApproval(false)
     } catch (e) {
       console.error(e)
     }
-  }, [onApprove, onApproveJava, farm.earnToken])
+  }, [onApprove, onApproveJava, onApproveFAD, farm.earnToken])
 
   const renderApprovalOrStakeButton = () => {
     return isApproved ? (
@@ -71,9 +76,6 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, ethereum, account }
       </Button>
     )
   }
-
-  const masterChefContract = useMasterchef();
-  const masterChefContractJava = useMasterchefJava();
 
   return (
     <Action>
@@ -90,6 +92,9 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, ethereum, account }
       }
       {farm.earnToken === 'JAVA' &&
         <HarvestActionJava earnings={earnings} pid={pid} />
+      }
+      {farm.earnToken === 'FAD' &&
+        <HarvestActionFAD earnings={earnings} pid={pid} />
       }
       <Flex>
         <Text bold textTransform="uppercase" color="secondary" fontSize="12px" pr="3px">

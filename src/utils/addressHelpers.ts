@@ -11,6 +11,9 @@ export const getMasterChefAddress = () => {
 export const getMasterChefAddressJava = () => {
   return addresses.masterChefJava[chainId]
 }
+export const getMasterChefAddressFAD = () => {
+  return addresses.masterChefFAD[chainId]
+}
 export const getMulticallAddress = () => {
   return addresses.mulltiCall[chainId]
 }

@@ -11,6 +11,10 @@ import {
   fetchFarmUserAllowancesJava,
   fetchFarmUserTokenBalancesJava,
   fetchFarmUserStakedBalancesJava,
+  fetchFarmUserEarningsFAD,
+  fetchFarmUserAllowancesFAD,
+  fetchFarmUserTokenBalancesFAD,
+  fetchFarmUserStakedBalancesFAD,
 } from './fetchFarmUser'
 import { FarmsState, Farm } from '../types'
 
@@ -56,10 +60,15 @@ export const fetchFarmUserDataAsync = (account) => async (dispatch) => {
   const userStakedBalancesJava = await fetchFarmUserStakedBalancesJava(account)
   const userFarmEarningsJava = await fetchFarmUserEarningsJava(account)
 
-  userFarmAllowances = [...userFarmAllowances, ...userFarmAllowancesJava]
-  userFarmTokenBalances = [...userFarmTokenBalances, ...userFarmTokenBalancesJava]
-  userStakedBalances = [...userStakedBalances, ...userStakedBalancesJava]
-  userFarmEarnings = [...userFarmEarnings, ...userFarmEarningsJava]
+  const userFarmAllowancesFAD = await fetchFarmUserAllowancesFAD(account)
+  const userFarmTokenBalancesFAD = await fetchFarmUserTokenBalancesFAD(account)
+  const userStakedBalancesFAD = await fetchFarmUserStakedBalancesFAD(account)
+  const userFarmEarningsFAD = await fetchFarmUserEarningsJava(account)
+
+  userFarmAllowances = [...userFarmAllowances, ...userFarmAllowancesJava, ...userFarmAllowancesFAD]
+  userFarmTokenBalances = [...userFarmTokenBalances, ...userFarmTokenBalancesJava, ...userFarmTokenBalancesFAD]
+  userStakedBalances = [...userStakedBalances, ...userStakedBalancesJava, ...userStakedBalancesFAD]
+  userFarmEarnings = [...userFarmEarnings, ...userFarmEarningsJava, ...userFarmEarningsFAD]
   
   const arrayOfUserDataObjects = userFarmAllowances.map((farmAllowance, index) => {
     return {

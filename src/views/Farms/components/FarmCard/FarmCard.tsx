@@ -89,11 +89,12 @@ interface FarmCardProps {
   cakePrice?: BigNumber
   bnbPrice?: BigNumber
   javaPrice?: BigNumber
+  FADPrice?: BigNumber
   ethereum?: provider
   account?: string
 }
 
-const FarmCard: React.FC<FarmCardProps> = ({ farm, removed, cakePrice, bnbPrice, javaPrice, ethereum, account }) => {
+const FarmCard: React.FC<FarmCardProps> = ({ farm, removed, cakePrice, bnbPrice, javaPrice, FADPrice, ethereum, account }) => {
   const TranslateString = useI18n()
   const [showExpandableSection, setShowExpandableSection] = useState(false)
   const [userinfo, setUserInfo] = useState({ depositTime: new BigNumber(0), amount: new BigNumber(0) });
@@ -137,8 +138,6 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, removed, cakePrice, bnbPrice,
 
   const withdrawalDelayPeriod = farm.withDrawDelay
 
-  // let qwe = { depositedTime: new BigNumber(0), amount: new BigNumber(0) };
-
   useEffect(() => {
     const fetchAllBalances = async () => {
       const [uinfo, pinfo] = await multicall(masterchefABIJava, [
@@ -168,8 +167,6 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, removed, cakePrice, bnbPrice,
     Number(poolinfo.lockTime),
   )
 
-  console.log("hms-------->", farm.num, Number(poolinfo.lockTime), Number(secondsRemaining))
-
   return (
     <FCard>
       {farm.tokenSymbol === 'ANFT' && <StyledCardAccent />}
@@ -187,7 +184,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, removed, cakePrice, bnbPrice,
           <Text bold style={{ display: 'flex', alignItems: 'center' }}>
             {farm.apy ? (
               <>
-               {farm.earnToken === 'ANFT' ? (
+               {farm.earnToken === 'ANFT' && (
                   <ApyButton
                     lpLabel={lpLabel}
                     quoteTokenAdresses={quoteTokenAdresses}
@@ -197,13 +194,27 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, removed, cakePrice, bnbPrice,
                     apy={farm.apy}
                     earnToken={earnToken}
                   />
-                  ) : (
+                  )
+                } 
+                {farm.earnToken === 'JAVA' && (
                     <ApyButton
                       lpLabel={lpLabel}
                       quoteTokenAdresses={quoteTokenAdresses}
                       quoteTokenSymbol={quoteTokenSymbol}
                       tokenAddresses={tokenAddresses}
                       cakePrice={javaPrice}
+                      apy={farm.apy}
+                      earnToken={earnToken}
+                    />
+                  )
+                }
+                {farm.earnToken === 'FAD' && (
+                    <ApyButton
+                      lpLabel={lpLabel}
+                      quoteTokenAdresses={quoteTokenAdresses}
+                      quoteTokenSymbol={quoteTokenSymbol}
+                      tokenAddresses={tokenAddresses}
+                      cakePrice={FADPrice}
                       apy={farm.apy}
                       earnToken={earnToken}
                     />
@@ -234,7 +245,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, removed, cakePrice, bnbPrice,
       </Flex>
       }
       
-      {hasUnstakingFee &&
+      {(hasUnstakingFee && earnToken === 'JAVA') &&
       <WithdrawalDelayTimer secondsRemaining={secondsRemaining} />
       }  
 

@@ -32,7 +32,8 @@ export enum QuoteToken {
   'DAI' = 'DAI',
   'ETH' = 'ETH',
   'JAVA' = 'JAVA',
-  'ANFT' = 'ANFT'
+  'ANFT' = 'ANFT',
+  'FAD' = 'FAD'
 }
 
 export enum PoolCategory {

@@ -33,6 +33,15 @@ export const stakeJava = async (masterChefContract, pid, amount, account) => {
     })
 }
 
+export const stakeFAD = async (masterChefContract, pid, amount, account) => {
+  return masterChefContract.methods
+    .deposit(pid, new BigNumber(amount).times(new BigNumber(10).pow(18)).toString())
+    .send({ from: account })
+    .on('transactionHash', (tx) => {
+      return tx.transactionHash
+    })
+}
+
 export const sousStake = async (sousChefContract, amount, account) => {
   return sousChefContract.methods
     .deposit(new BigNumber(amount).times(new BigNumber(10).pow(18)).toString())
@@ -69,6 +78,15 @@ export const unstake = async (masterChefContract, pid, amount, account) => {
 }
 
 export const unstakeJava = async (masterChefContract, pid, amount, account) => {
+  return masterChefContract.methods
+    .withdraw(pid, new BigNumber(amount).times(new BigNumber(10).pow(18)).toString())
+    .send({ from: account })
+    .on('transactionHash', (tx) => {
+      return tx.transactionHash
+    })
+}
+
+export const unstakeFAD = async (masterChefContract, pid, amount, account) => {
   return masterChefContract.methods
     .withdraw(pid, new BigNumber(amount).times(new BigNumber(10).pow(18)).toString())
     .send({ from: account })

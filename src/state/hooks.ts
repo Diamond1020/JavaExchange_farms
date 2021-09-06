@@ -98,6 +98,18 @@ export const useJavaCakeBusd = (): BigNumber => {
   // return farm.tokenPriceVsQuote ? new BigNumber(farm.tokenPriceVsQuote) : ZERO;
 }
 
+export const useFADCakeBusd = (): BigNumber => {
+  const num = 13 // JAVA-BNB LP
+  const bnbPriceUSD = usePriceBnbBusd()
+  const farm = useFarmFromNum(num)
+  const FADPriceBNB = farm.tokenPriceVsQuote ? new BigNumber(farm.tokenPriceVsQuote) : ZERO
+  return new BigNumber(FADPriceBNB).times(bnbPriceUSD)
+  // return farm.tokenPriceVsQuote ? bnbPriceUSD.times(farm.tokenPriceVsQuote) : ZERO
+  // const pid = 1; // EGG-BUSD LP
+  // const farm = useFarmFromNum(pid);
+  // return farm.tokenPriceVsQuote ? new BigNumber(farm.tokenPriceVsQuote) : ZERO;
+}
+
 export const useTotalValue = (): BigNumber => {
   const farms = useFarms();
   const bnbPrice = usePriceBnbBusd();

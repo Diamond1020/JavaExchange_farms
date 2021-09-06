@@ -8,7 +8,7 @@ import { Image, Heading } from '@pancakeswap-libs/uikit'
 import { BLOCKS_PER_YEAR, CAKE_PER_BLOCK, CAKE_POOL_PID } from 'config'
 import FlexLayout from 'components/layout/Flex'
 import Page from 'components/layout/Page'
-import { useFarms, usePriceBnbBusd, usePriceCakeBusd, useJavaCakeBusd } from 'state/hooks'
+import { useFarms, usePriceBnbBusd, usePriceCakeBusd, useJavaCakeBusd, useFADCakeBusd } from 'state/hooks'
 import useRefresh from 'hooks/useRefresh'
 import { fetchFarmUserDataAsync } from 'state/actions'
 import { QuoteToken } from 'config/constants/types'
@@ -28,6 +28,7 @@ const Farms: React.FC<FarmsProps> = (farmsProps) => {
   const cakePrice = usePriceCakeBusd()
   const bnbPrice = usePriceBnbBusd()
   const javaPrice = useJavaCakeBusd()
+  const FADPrice = useFADCakeBusd()
   const { account, ethereum }: { account: string; ethereum: provider } = useWallet()
   const {tokenMode} = farmsProps;
 
@@ -55,18 +56,11 @@ const Farms: React.FC<FarmsProps> = (farmsProps) => {
     (farm) => farm.lpSymbol.includes("JAVA"),
   )
 
-  const busdOnlyFarms = activeFarms.filter(
-    (farm) => farm.lpSymbol.includes("BUSD") 
+  const FADOnlyFarms = activeFarms.filter(
+    (farm) => farm.lpSymbol.includes("FAD") 
   )
 
-  const bnbOnlyFarms = activeFarms.filter(
-    (farm) => farm.lpSymbol.includes("BNB") 
-  )
-
-  const stakedBusdOnlyFarms = busdOnlyFarms.filter(
-    (farm) => farm.userData && new BigNumber(farm.userData.stakedBalance).isGreaterThan(0),
-  )
-  const stakedBnbOnlyFarms = bnbOnlyFarms.filter(
+  const stakedFADOnlyFarms = FADOnlyFarms.filter(
     (farm) => farm.userData && new BigNumber(farm.userData.stakedBalance).isGreaterThan(0),
   )
   const stakedAnftOnlyFarms = anftOnlyFarms.filter(
@@ -86,17 +80,33 @@ const Farms: React.FC<FarmsProps> = (farmsProps) => {
         // if (!farm.tokenAmount || !farm.lpTotalInQuoteToken || !farm.lpTotalInQuoteToken) {
         //   return farm
         // }
-        const cakeRewardPerBlock = new BigNumber(farm.rewardPerBlock || 1).times(new BigNumber(farm.poolWeight)).div(new BigNumber(10).pow(9))
+
+        let cakeRewardPerBlock = new BigNumber(farm.rewardPerBlock || 1).times(new BigNumber(farm.poolWeight)).div(new BigNumber(10).pow(18))
+        if (farm.earnToken === 'ANFT')
+          cakeRewardPerBlock = cakeRewardPerBlock.times(new BigNumber(10).pow(9))
         const cakeRewardPerYear = cakeRewardPerBlock.times(BLOCKS_PER_YEAR)
-        const cakeRewardPerMonth = cakeRewardPerYear.div(12)
+        // const cakeRewardPerMonth = cakeRewardPerYear.div(12)
         let apy = cakePrice.times(cakeRewardPerYear);
-        if (farm.quoteTokenSymbol === QuoteToken.ANFT) {
-          apy = cakePrice.times(cakeRewardPerMonth);
+        if (farm.earnToken === 'JAVA') {
+          apy = javaPrice.times(cakeRewardPerYear);
         }
+
+        if (farm.earnToken === 'FAD') {
+          apy = FADPrice.times(cakeRewardPerYear);
+        }
+
         let totalValue = new BigNumber(farm.lpTotalInQuoteToken || 0);
 
         if (farm.quoteTokenSymbol === QuoteToken.BNB) {
           totalValue = totalValue.times(bnbPrice);
+        }
+
+        if (farm.quoteTokenSymbol === QuoteToken.JAVA) {
+          totalValue = totalValue.times(javaPrice);
+        }
+
+        if (farm.quoteTokenSymbol === QuoteToken.ANFT) {
+          totalValue = totalValue.times(cakePrice);
         }
 
         if(totalValue.comparedTo(0) > 0){
@@ -115,12 +125,13 @@ const Farms: React.FC<FarmsProps> = (farmsProps) => {
           bnbPrice={bnbPrice}
           cakePrice={cakePrice}
           javaPrice={javaPrice}
+          FADPrice={FADPrice}
           ethereum={ethereum}
           account={account}
         />
       ))
     },
-    [bnbPrice, account, cakePrice, javaPrice, ethereum],
+    [bnbPrice, account, cakePrice, javaPrice, FADPrice, ethereum],
   )
 
   return (
@@ -128,13 +139,13 @@ const Farms: React.FC<FarmsProps> = (farmsProps) => {
       <Heading as="h1" size="lg" color="primary" mb="50px" style={{ textAlign: 'center' }}>
         { 
           tokenMode ?
-            TranslateString(10002, 'Stake tokens to earn ANFT, JAVA')
+            TranslateString(999, 'Stake tokens to earn')
             :
-          TranslateString(320, 'Stake LP tokens to earn ANFT')
+          TranslateString(999, 'Stake LP tokens to earn')
         }
       </Heading>
       <Heading as="h2" color="secondary" mb="50px" style={{ textAlign: 'center' }}>
-        {TranslateString(10000, 'Deposit Fee will be used to buyback')}
+        {TranslateString(999, 'Deposit Fee will be used to buyback')}
       </Heading>
       <FarmTabButtons stakedOnly={stakedOnly} setStakedOnly={setStakedOnly}/>
       <div>
@@ -149,11 +160,8 @@ const Farms: React.FC<FarmsProps> = (farmsProps) => {
           <Route exact path={`${path}/java`}>
           {stakedOnly ? farmsList(stakedJavaOnlyFarms, false) : farmsList(javaOnlyFarms, false)}
           </Route>
-          <Route exact path={`${path}/busd`}>
-            {stakedOnly ? farmsList(stakedBusdOnlyFarms, false) : farmsList(busdOnlyFarms, false)}
-          </Route>
-          <Route exact path={`${path}/bnb`}>
-            {stakedOnly ? farmsList(stakedBnbOnlyFarms, false) : farmsList(bnbOnlyFarms, false)}
+          <Route exact path={`${path}/fad`}>
+            {stakedOnly ? farmsList(stakedFADOnlyFarms, false) : farmsList(FADOnlyFarms, false)}
           </Route>
         </FlexLayout>
       </div>

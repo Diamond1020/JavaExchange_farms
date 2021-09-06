@@ -119,6 +119,7 @@ const farms: FarmConfig[] = [
     withDrawDelay: '0 day',
   },
   // {
+  //   num: 6,
   //   pid: 6,
   //   risk: 5,
   //   lpSymbol: 'BNB-BUSD LP',
@@ -133,6 +134,8 @@ const farms: FarmConfig[] = [
   //   },
   //   quoteTokenSymbol: QuoteToken.BUSD,
   //   quoteTokenAdresses: contracts.busd,
+  //   earnToken: 'ANFT',
+  //   withDrawDelay: '0 day',
   // },
   {
     num: 7,
@@ -150,6 +153,25 @@ const farms: FarmConfig[] = [
     },
     quoteTokenSymbol: QuoteToken.BUSD,
     quoteTokenAdresses: contracts.busd,
+    earnToken: 'ANFT',
+    withDrawDelay: '0 day',
+  },
+  {
+    num: 16,
+    pid: 8,
+    risk: 5,
+    lpSymbol: 'FAD-BNB LP',
+    lpAddresses: {
+      97: '',
+      56: '0x0973E1923D1e8f84a46647FE503707a8A7bB32dD',
+    },
+    tokenSymbol: 'FAD',
+    tokenAddresses: {
+      97: '',
+      56: '0x62b0d9ca11e1c6368ee8c3e914823926b99d498d',
+    },
+    quoteTokenSymbol: QuoteToken.BNB,
+    quoteTokenAdresses: contracts.wbnb,
     earnToken: 'ANFT',
     withDrawDelay: '0 day',
   },
