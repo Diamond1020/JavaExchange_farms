@@ -106,7 +106,7 @@ const Farms: React.FC<FarmsProps> = (farmsProps) => {
         }
 
         if (farm.quoteTokenSymbol === QuoteToken.ANFT) {
-          totalValue = totalValue.times(cakePrice);
+          totalValue = totalValue.times(cakePrice).times(new BigNumber(10).pow(9));
         }
 
         if(totalValue.comparedTo(0) > 0){

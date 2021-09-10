@@ -114,7 +114,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, removed, cakePrice, bnbPrice,
       return bnbPrice.times(farm.lpTotalInQuoteToken)
     }
     if (farm.quoteTokenSymbol === QuoteToken.ANFT) {
-      return cakePrice.times(farm.lpTotalInQuoteToken)
+      return cakePrice.times(farm.lpTotalInQuoteToken).times(new BigNumber(10).pow(9))
     }
     if (farm.quoteTokenSymbol === QuoteToken.JAVA) {
       return javaPrice.times(farm.lpTotalInQuoteToken)
@@ -123,7 +123,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, removed, cakePrice, bnbPrice,
   }, [bnbPrice, cakePrice, javaPrice, farm.lpTotalInQuoteToken, farm.quoteTokenSymbol])
 
   const totalValueFormated = totalValue
-    ? `$${Number(totalValue).toLocaleString(undefined, { maximumFractionDigits: 9 })}`
+    ? `$${Number(totalValue).toLocaleString(undefined, { maximumFractionDigits: 4 })}`
     : '-'
 
   const lpLabel = farm.lpSymbol

@@ -4,7 +4,6 @@ import masterchefABI from 'config/abi/masterchef.json'
 import masterchefABIJava from 'config/abi/masterchefJava.json'
 import masterchefABIFAD from 'config/abi/masterchefFAD.json'
 import multicall from 'utils/multicall'
-import farmsConfig from 'config/constants/farms'
 import farmsConfigANFT from 'config/constants/farmsANFT'
 import farmsConfigJAVA from 'config/constants/farmsJAVA'
 import farmsConfigFAD from 'config/constants/farmsFAD'
@@ -208,7 +207,7 @@ export const fetchFarmUserEarningsFAD = async (account: string) => {
   const calls = farmsConfigFAD.map((farm) => {
     return {
       address: masterChefAdress,
-      name: 'pendingJAVA',
+      name: 'pendingFAD',
       params: [farm.pid, account],
     }
   })

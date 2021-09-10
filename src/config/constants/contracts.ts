@@ -8,7 +8,7 @@ export default {
     97: '',
   },
   masterChefJava: {
-    56: '0x2b5c31507cE67B9267514Ac57AAC5f3f2d56A17d',
+    56: '0x2e950B6D16FDBcF14eF5238be246F1688Cb33139',
     97: '',
   },
   masterChefFAD: {

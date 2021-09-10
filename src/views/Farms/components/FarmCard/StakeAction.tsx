@@ -39,7 +39,7 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({ stakedBalance, tokenBalan
   const { onStakeFAD } = useStakeFAD(pid)
   const { onUnstakeFAD } = useUnstakeFAD(pid)
 
-  const rawStakedBalance = (pid === 0 && earnToken === 'ANFT') ? getBalanceNumber(stakedBalance, 9) : getBalanceNumber(stakedBalance)
+  const rawStakedBalance = ((pid === 0 && earnToken === 'ANFT') || (pid === 2  && earnToken === 'FAD')) ? getBalanceNumber(stakedBalance, 9) : getBalanceNumber(stakedBalance)
   const displayBalance = rawStakedBalance.toLocaleString()
 
   const [onPresentDeposit] = useModal(<DepositModal max={tokenBalance} onConfirm={onStake} tokenName={tokenName} depositFeeBP={depositFeeBP} withdrawFeeBP={withdrawFeeBP} />)
@@ -102,10 +102,10 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({ stakedBalance, tokenBalan
         { (earnToken === 'FAD') && 
           ( 
           <>
-            <IconButton variant="tertiary" onClick={onPresentWithdraw} mr="6px">
+            <IconButton variant="tertiary" onClick={onPresentWithdrawFAD} mr="6px">
               <MinusIcon color="primary" />
             </IconButton>
-            <IconButton variant="tertiary" onClick={onPresentDeposit}>
+            <IconButton variant="tertiary" onClick={onPresentDepositFAD}>
               <AddIcon color="primary" />
             </IconButton>
           </>  
